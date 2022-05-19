@@ -1,34 +1,48 @@
-import React, { useContext, useState } from 'react';
-import Layout from '../component/Layout';
-import { Store } from '../utils/store';
-import NextLink from 'next/link';
-import Image from 'next/image';
-import {Grid,TableContainer,Table,Typography,TableHead,TableBody,TableRow,TableCell,Link,Select,MenuItem,Button,Card,List,ListItem,} from '@material-ui/core';
-import dynamic from 'next/dynamic';
-import axios from 'axios';
-import { useRouter } from 'next/router';
+import React, { useContext } from "react";
+import Layout from "../component/Layout";
+import { Store } from "../utils/store";
+import NextLink from "next/link";
+// import Image from 'next/image';
+import {
+  Grid,
+  TableContainer,
+  Table,
+  Typography,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  Link,
+  Select,
+  MenuItem,
+  Button,
+  Card,
+  List,
+  ListItem,
+} from "@material-ui/core";
+import dynamic from "next/dynamic";
+import axios from "axios";
+import { useRouter } from "next/router";
 
 function CartScreen() {
-  const { state , dispatch } = useContext(Store);
-  const { cart: { cartItems } } = state;
+  const { state, dispatch } = useContext(Store);
+  const {
+    cart: { cartItems },
+  } = state;
   const router = useRouter();
 
+  const updateCartHandler = async (item, quantity) => {
+    const { data } = await axios.get(`/api/products/${item._id}`);
+    if (data.countInStock < quantity) {
+      window.alert("Sorry. Product is out of stock");
+      return;
+    }
+    dispatch({ type: "CART_ADD_ITEM", payload: { ...item, quantity } });
+  };
 
-        const updateCartHandler = async (item, quantity) => {
-
-        const { data } = await axios.get(`/api/products/${item._id}`);
-        if (data.countInStock < quantity) {
-                window.alert('Sorry. Product is out of stock');
-                return;
-        }
-        dispatch({ type: 'CART_ADD_ITEM', payload: { ...item, quantity } });
-
-        };
-        
-        const removeItemHandler = (item) => {
-        dispatch({ type: 'CART_REMOVE_ITEM', payload: item });
-        };
-
+  const removeItemHandler = (item) => {
+    dispatch({ type: "CART_REMOVE_ITEM", payload: item });
+  };
 
   return (
     <Layout title="Shopping Cart">
@@ -37,7 +51,7 @@ function CartScreen() {
       </Typography>
       {cartItems.length === 0 ? (
         <div>
-          Cart is empty.{' '}
+          Cart is empty.{" "}
           <NextLink href="/" passHref>
             <Link>Go shopping</Link>
           </NextLink>
@@ -62,9 +76,19 @@ function CartScreen() {
                       <TableCell>
                         <NextLink href={`/product/${item._id}`} passHref>
                           <Link>
-                          <div style={{maxWidth:'120px' , overflow:'hidden' , textAlign:'center' }} > 
-                          <img src={item.image} alt={item.name} style={{width:'100%'}} ></img> </div>
-
+                            <div
+                              style={{
+                                maxWidth: "120px",
+                                overflow: "hidden",
+                                textAlign: "center",
+                              }}
+                            >
+                              <img
+                                src={item.image}
+                                alt={item.name}
+                                style={{ width: "100%" }}
+                              ></img>{" "}
+                            </div>
                           </Link>
                         </NextLink>
                       </TableCell>
@@ -77,7 +101,12 @@ function CartScreen() {
                         </NextLink>
                       </TableCell>
                       <TableCell align="right">
-                        <Select value={item.quantity} onChange={(e) => updateCartHandler(item, e.target.value)}>
+                        <Select
+                          value={item.quantity}
+                          onChange={(e) =>
+                            updateCartHandler(item, e.target.value)
+                          }
+                        >
                           {[...Array(item.countInStock).keys()].map((x) => (
                             <MenuItem key={x + 1} value={x + 1}>
                               {x + 1}
@@ -87,7 +116,11 @@ function CartScreen() {
                       </TableCell>
                       <TableCell align="right">${item.price}</TableCell>
                       <TableCell align="right">
-                        <Button variant="contained" color="secondary" onClick={() => removeItemHandler(item)}>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          onClick={() => removeItemHandler(item)}
+                        >
                           x
                         </Button>
                       </TableCell>
@@ -102,13 +135,18 @@ function CartScreen() {
               <List>
                 <ListItem>
                   <Typography variant="h2">
-                    Subtotal ({cartItems.reduce((a, c) => a + c.quantity, 0)}{' '}
+                    Subtotal ({cartItems.reduce((a, c) => a + c.quantity, 0)}{" "}
                     items) : $
                     {cartItems.reduce((a, c) => a + c.quantity * c.price, 0)}
                   </Typography>
                 </ListItem>
                 <ListItem>
-                  <Button variant="contained" color="primary" fullWidth onClick={()=>router.push('/shipping')}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    onClick={() => router.push("/shipping")}
+                  >
                     Check Out
                   </Button>
                 </ListItem>
@@ -120,6 +158,5 @@ function CartScreen() {
     </Layout>
   );
 }
-
 
 export default dynamic(() => Promise.resolve(CartScreen), { ssr: false });

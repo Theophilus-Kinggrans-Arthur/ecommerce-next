@@ -1,7 +1,7 @@
-import Head from "next/head";
-import Image from "next/image";
+// import Head from "next/head";
+// import Image from "next/image";
 import Layout from "../component/Layout";
-import styles from "../styles/Home.module.css";
+// import styles from "../styles/Home.module.css";
 import {
   Grid,
   Card,
@@ -13,7 +13,7 @@ import {
   Button,
   Link,
 } from "@material-ui/core";
-import data from "../utils/data";
+// import data from "../utils/data";
 import NextLink from "next/link";
 import db from "../utils/db";
 import Product from "../models/Products";
