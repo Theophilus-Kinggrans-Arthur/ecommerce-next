@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
 import { useRouter } from "next/router";
-import data from "../../utils/data";
+// import data from "../../utils/data";
 import NextLink from "next/link";
-import Image from "next/image";
+// import Image from "next/image";
 import {
   Grid,
   Link,
