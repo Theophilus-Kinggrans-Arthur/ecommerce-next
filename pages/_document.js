@@ -1,7 +1,7 @@
+import React from "react";
 import { ServerStyleSheets } from "@material-ui/core/styles";
 // eslint-disable-next-line @next/next/no-document-import-in-page
-import { Head, Html, Main, NextScript, Document } from "next/document";
-import React from "react";
+import Document, { Head, Html, Main, NextScript } from "next/document";
 
 export default class MyDocument extends Document {
   render() {
